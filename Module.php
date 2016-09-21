@@ -5,14 +5,16 @@ namespace EdpSuperluminal;
 use Zend\Code\Reflection\ClassReflection,
     Zend\Code\Scanner\FileScanner,
     Zend\EventManager\StaticEventManager;
+use Zend\Console\Adapter\AdapterInterface;
 use Zend\Console\Request as ConsoleRequest;
+use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 
 /**
  * Create a class cache of all classes used.
  *
  * @package EdpSuperluminal
  */
-class Module
+class Module implements ConsoleUsageProviderInterface
 {
     protected $knownClasses = array();
 
@@ -207,5 +209,12 @@ class Module
     {
         $scanner = new FileScanner(ZF_CLASS_CACHE);
         $this->knownClasses = array_unique($scanner->getClassNames());
+    }
+
+    public function getConsoleUsage(AdapterInterface $console)
+    {
+        $usage = [];
+        $usage['EDPSUPERLUMINAL_CACHE'] = 'Generate cache for all classes in project';
+        return $usage;
     }
 }
