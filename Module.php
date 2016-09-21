@@ -39,7 +39,7 @@ class Module implements ConsoleUsageProviderInterface
     {
         $request = $e->getRequest();
         if ($request instanceof ConsoleRequest) {
-            $params = $e->getParams()->toArray();
+            $params = $request->getParams()->toArray();
             if (!in_array('EDPSUPERLUMINAL_CACHE', $params)) {
                 return;
             } else {
