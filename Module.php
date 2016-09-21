@@ -36,8 +36,14 @@ class Module
     public function cache($e)
     {
         $request = $e->getRequest();
-        if ($request instanceof ConsoleRequest ||
-            $request->getQuery()->get('EDPSUPERLUMINAL_CACHE', null) === null) {
+        if ($request instanceof ConsoleRequest) {
+            $params = $e->getParams()->toArray();
+            if (!in_array('EDPSUPERLUMINAL_CACHE', $params)) {
+                return;
+            } else {
+                ini_set('memory_limit', '512M');
+            }
+        } elseif ($request->getQuery()->get('EDPSUPERLUMINAL_CACHE', null) === null) {
             return;
         }
 
@@ -91,6 +97,11 @@ class Module
         file_put_contents(ZF_CLASS_CACHE, $code);
         // minify the file
         file_put_contents(ZF_CLASS_CACHE, php_strip_whitespace(ZF_CLASS_CACHE));
+
+        if ($request instanceof ConsoleRequest) {
+            // done, no error
+            $e->getResponse()->setErrorLevel(0);
+        }
     }
 
     /**
